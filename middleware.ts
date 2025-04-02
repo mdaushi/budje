@@ -3,7 +3,7 @@ import { type NextRequest, NextResponse } from "next/server"
 import { updateSession } from "./lib/supabase/clients/middleware"
 
 const I18nMiddleware = createI18nMiddleware({
-  locales: ["en"],
+  locales: ["en", "id"],
   defaultLocale: "en",
   urlMappingStrategy: "rewrite",
 })

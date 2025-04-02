@@ -1,3 +1,3 @@
 export default {
-  welcome: "Hello {name}!",
+  "navigation.dashboard": "Dashboard",
 } as const

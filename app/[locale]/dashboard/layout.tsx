@@ -1,14 +1,17 @@
-import { AppSidebar } from "@/components/app-sidebar"
-import { NavUser } from "@/components/nav-user"
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
+import AppLayout from "@/components/app-layout"
 import { getUser } from "@/lib/supabase/queries"
+import { I18nProviderClient } from "@/locales/client"
 import { User } from "@/types"
 
 export default async function Layout({
   children,
+  params,
 }: {
+  params: Promise<{ locale: string }>
   children: React.ReactNode
 }) {
+  const { locale } = await params
+
   const { data } = await getUser()
 
   const user: User = {
@@ -18,16 +21,8 @@ export default async function Layout({
   }
 
   return (
-    <SidebarProvider
-      style={
-        {
-          "--sidebar-width": "calc(var(--spacing) * 72)",
-          "--header-height": "calc(var(--spacing) * 12)",
-        } as React.CSSProperties
-      }
-    >
-      <AppSidebar variant="inset" navUser={<NavUser user={user} />} />
-      <SidebarInset>{children}</SidebarInset>
-    </SidebarProvider>
+    <I18nProviderClient locale={locale}>
+      <AppLayout user={user}>{children}</AppLayout>
+    </I18nProviderClient>
   )
 }
