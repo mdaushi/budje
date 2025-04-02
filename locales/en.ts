@@ -1,3 +1,7 @@
 export default {
-  "navigation.dashboard": "Dashboard",
+  // Dashboard
+  "dashboard.plural": "Dashboard",
+
+  // Savings
+  "saving.plural": "Savings",
 } as const

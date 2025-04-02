@@ -6,6 +6,12 @@ export const SIDEBAR_MENU_CONFIG: Menu[] = [
     title: "dashboard",
     url: "/dashboard",
     icon: IconDashboard,
-    translationKey: "navigation.dashboard",
+    translationKey: "dashboard.plural",
+  },
+  {
+    title: "savings",
+    url: "/savings",
+    icon: IconDashboard,
+    translationKey: "saving.plural",
   },
 ]
