@@ -9,18 +9,18 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar"
-import Link from "next/link"
+import { Menu } from "@/types"
+import { useRouter } from "next/navigation"
 
 export function NavMain({
   items,
 }: {
-  items: {
-    title: string
-    url: string
-    icon?: Icon
-  }[]
+  items: Menu[]
 }) {
+  const router = useRouter()
+  const {setOpenMobile} = useSidebar()
   return (
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">
@@ -44,15 +44,18 @@ export function NavMain({
           </SidebarMenuItem>
         </SidebarMenu>
         <SidebarMenu>
-          {items.map((item) => (
-            <Link href={item.url} key={item.title}>
-              <SidebarMenuItem>
-                <SidebarMenuButton tooltip={item.title}>
+          {items.map((item, index) => (
+              <SidebarMenuItem key={index}>
+                <SidebarMenuButton tooltip={item.title} onClick={() => {
+                  router.push(item.url)
+
+                  // close sidebar
+                  setOpenMobile(false)
+                }}>
                   {item.icon && <item.icon />}
                   <span>{item.title}</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-            </Link>
           ))}
         </SidebarMenu>
       </SidebarGroupContent>
