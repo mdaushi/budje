@@ -14,13 +14,9 @@ import {
 import { Menu } from "@/types"
 import { useRouter } from "next/navigation"
 
-export function NavMain({
-  items,
-}: {
-  items: Menu[]
-}) {
+export function NavMain({ items }: { items: Menu[] }) {
   const router = useRouter()
-  const {setOpenMobile} = useSidebar()
+  const { setOpenMobile } = useSidebar()
   return (
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">
@@ -45,17 +41,20 @@ export function NavMain({
         </SidebarMenu>
         <SidebarMenu>
           {items.map((item, index) => (
-              <SidebarMenuItem key={index}>
-                <SidebarMenuButton tooltip={item.title} onClick={() => {
+            <SidebarMenuItem key={index}>
+              <SidebarMenuButton
+                tooltip={item.title}
+                onClick={() => {
                   router.push(item.url)
 
                   // close sidebar
                   setOpenMobile(false)
-                }}>
-                  {item.icon && <item.icon />}
-                  <span>{item.title}</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+                }}
+              >
+                {item.icon && <item.icon />}
+                <span>{item.title}</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
           ))}
         </SidebarMenu>
       </SidebarGroupContent>

@@ -16,7 +16,14 @@ import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Edit, Plus, Calendar, DollarSign, Clock, Sparkles } from "lucide-react"
 import { Saving } from "@/types"
-// import { GoalSummaryCards } from "@/components/goal-summary-cards"
+import { Label } from "../ui/label"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select"
 
 const sampleGoals: Saving[] = [
   {
@@ -104,116 +111,150 @@ const sampleGoals: Saving[] = [
 export function GoalsGrid() {
   const [goals, setGoals] = useState(sampleGoals)
 
-  return (
-    <div className="space-y-8 px-4 lg:px-6">
-      {/* <GoalSummaryCards goals={goals} /> */}
+  const [activeTab, setActiveTab] = useState("all")
 
-      <Tabs defaultValue="all" className="w-full">
-        <TabsList className="mb-2">
-          <TabsTrigger value="all">All Goals</TabsTrigger>
+  const handleTabChange = (value: string) => {
+    setActiveTab(value)
+  }
+
+  return (
+    <Tabs
+      defaultValue="all"
+      className="w-full flex-col justify-start gap-6"
+      value={activeTab}
+      onValueChange={handleTabChange}
+    >
+      <div className="flex items-center justify-between px-4 lg:px-6">
+        <Label htmlFor="view-selector" className="sr-only">
+          View
+        </Label>
+
+        {/* Mobile Select - synced with active tab */}
+        <Select
+          defaultValue="all"
+          value={activeTab}
+          onValueChange={handleTabChange}
+        >
+          <SelectTrigger
+            className="flex w-fit @4xl/main:hidden"
+            size="sm"
+            id="view-selector"
+          >
+            <SelectValue placeholder="Select a view" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Savings</SelectItem>
+            <SelectItem value="in-progress">In Progress</SelectItem>
+            <SelectItem value="completed">Completed</SelectItem>
+            <SelectItem value="upcoming">Upcoming Contributions</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <TabsList className="**:data-[slot=badge]:bg-muted-foreground/30 hidden **:data-[slot=badge]:size-5 **:data-[slot=badge]:rounded-full **:data-[slot=badge]:px-1 @4xl/main:flex">
+          <TabsTrigger value="all">All Savings</TabsTrigger>
           <TabsTrigger value="in-progress">In Progress</TabsTrigger>
           <TabsTrigger value="completed">Completed</TabsTrigger>
           <TabsTrigger value="upcoming">Upcoming Contributions</TabsTrigger>
         </TabsList>
+      </div>
 
-        <TabsContent value="all" className="space-y-8">
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {goals.map((goal) => (
+      <TabsContent value="all" className="space-y-8 px-4 lg:px-6">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {goals.map((goal) => (
+            <GoalCard key={goal.id} goal={goal} />
+          ))}
+          <Card className="flex flex-col items-center justify-center h-full min-h-[320px] border-dashed">
+            <Link href="#" className="h-full w-full">
+              <Button
+                variant="ghost"
+                className="flex flex-col h-full w-full gap-4 p-6"
+              >
+                <div className="size-12 rounded-full bg-muted flex items-center justify-center">
+                  <Plus className="h-6 w-6 text-muted-foreground" />
+                </div>
+                <span className="text-base font-medium text-muted-foreground">
+                  Add New Goal
+                </span>
+              </Button>
+            </Link>
+          </Card>
+        </div>
+      </TabsContent>
+
+      <TabsContent value="in-progress" className="space-y-4 px-4 lg:px-6">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {goals
+            .filter((goal) => goal.status === "in-progress")
+            .map((goal) => (
               <GoalCard key={goal.id} goal={goal} />
             ))}
-            <Card className="flex flex-col items-center justify-center h-full min-h-[320px] border-dashed">
-              <Link href="#" className="h-full w-full">
-                <Button
-                  variant="ghost"
-                  className="flex flex-col h-full w-full gap-4 p-6"
-                >
-                  <div className="size-12 rounded-full bg-muted flex items-center justify-center">
-                    <Plus className="h-6 w-6 text-muted-foreground" />
-                  </div>
-                  <span className="text-base font-medium text-muted-foreground">
-                    Add New Goal
-                  </span>
-                </Button>
-              </Link>
-            </Card>
-          </div>
-        </TabsContent>
+        </div>
+      </TabsContent>
 
-        <TabsContent value="in-progress" className="space-y-4">
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {goals
-              .filter((goal) => goal.status === "in-progress")
-              .map((goal) => (
-                <GoalCard key={goal.id} goal={goal} />
-              ))}
-          </div>
-        </TabsContent>
+      <TabsContent value="completed" className="space-y-4 px-4 lg:px-6">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {goals
+            .filter((goal) => goal.status === "completed")
+            .map((goal) => (
+              <GoalCard key={goal.id} goal={goal} />
+            ))}
+        </div>
+      </TabsContent>
 
-        <TabsContent value="completed" className="space-y-4">
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {goals
-              .filter((goal) => goal.status === "completed")
-              .map((goal) => (
-                <GoalCard key={goal.id} goal={goal} />
-              ))}
-          </div>
-        </TabsContent>
-
-        <TabsContent value="upcoming" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Upcoming Contributions</CardTitle>
-              <CardDescription>
-                Your scheduled contributions for the next 30 days
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {goals
-                  .filter(
-                    (goal) =>
-                      goal.status === "in-progress" && goal.nextContribution
-                  )
-                  .sort(
-                    (a, b) =>
-                      new Date(a.nextContribution!).getTime() -
-                      new Date(b.nextContribution!).getTime()
-                  )
-                  .map((goal) => (
-                    <div
-                      key={goal.id}
-                      className="flex items-center justify-between p-4 rounded-lg border"
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className="size-10 rounded-full bg-muted flex items-center justify-center">
-                          <Calendar className="h-5 w-5 text-muted-foreground" />
-                        </div>
-                        <div>
-                          <h4 className="font-medium">{goal.title}</h4>
-                          <p className="text-sm text-muted-foreground">
-                            Next contribution:{" "}
-                            {new Date(
-                              goal.nextContribution!
-                            ).toLocaleDateString()}
-                          </p>
-                        </div>
+      <TabsContent value="upcoming" className="space-y-4 px-4 lg:px-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Upcoming Contributions</CardTitle>
+            <CardDescription>
+              Your scheduled contributions for the next 30 days
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {goals
+                .filter(
+                  (goal) =>
+                    goal.status === "in-progress" && goal.nextContribution
+                )
+                .sort(
+                  (a, b) =>
+                    new Date(a.nextContribution!).getTime() -
+                    new Date(b.nextContribution!).getTime()
+                )
+                .map((goal) => (
+                  <div
+                    key={goal.id}
+                    className="flex items-center justify-between p-4 rounded-lg border"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="size-10 rounded-full bg-muted flex items-center justify-center">
+                        <Calendar className="h-5 w-5 text-muted-foreground" />
                       </div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium">
-                          ${goal.contributionAmount}
-                        </span>
-                        <Button size="sm" variant="outline">
-                          Contribute Now
-                        </Button>
+                      <div>
+                        <h4 className="font-medium">{goal.title}</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Next contribution:{" "}
+                          {new Date(
+                            goal.nextContribution!
+                          ).toLocaleDateString()}
+                        </p>
                       </div>
                     </div>
-                  ))}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
-    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium">
+                        ${goal.contributionAmount}
+                      </span>
+                      {/* <Button size="sm" variant="outline">
+                        Contribute Now
+                      </Button> */}
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </CardContent>
+        </Card>
+      </TabsContent>
+    </Tabs>
   )
 }
 
