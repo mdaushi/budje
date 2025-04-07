@@ -24,6 +24,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select"
+import { IconPlus } from "@tabler/icons-react"
+import { Drawer } from "../drawer"
 
 const sampleGoals: Saving[] = [
   {
@@ -156,6 +158,13 @@ export function GoalsGrid() {
           <TabsTrigger value="completed">Completed</TabsTrigger>
           <TabsTrigger value="upcoming">Upcoming Contributions</TabsTrigger>
         </TabsList>
+
+        <Link href="/savings/create" prefetch={true}>
+          <Button variant="outline" size="sm">
+            <IconPlus />
+            <span className="hidden lg:inline">Add Saving</span>
+          </Button>
+        </Link>
       </div>
 
       <TabsContent value="all" className="space-y-8 px-4 lg:px-6">
